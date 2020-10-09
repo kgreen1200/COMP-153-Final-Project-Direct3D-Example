@@ -8,7 +8,7 @@ using namespace COMP_153_Final_Project_Direct3D_Example;
 using namespace DirectX;
 using namespace Windows::Foundation;
 
-// Loads vertex and pixel shaders from files and instantiates the cube geometry.
+// Loads vertex and pixel shaders from files and instantiates the pyramid geometry.
 Sample3DSceneRenderer::Sample3DSceneRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources) :
 	m_loadingComplete(false),
 	m_degreesPerSecond(45),
@@ -236,26 +236,23 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 	});
 
 	// Once both shaders are loaded, create the mesh.
-	auto createCubeTask = (createPSTask && createVSTask).then([this] () {
+	auto createpyramidTask = (createPSTask && createVSTask).then([this] () {
 
 		// Load mesh vertices. Each vertex has a position and a color.
-		static const VertexPositionColor cubeVertices[] = 
+		static const VertexPositionColor pyramidVertices[] =
 		{
-			{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-			{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f)},
-			{XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f)},
-			{XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f)},
-			{XMFLOAT3( 0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f)},
-			{XMFLOAT3( 0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f)},
-			{XMFLOAT3( 0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f)},
-			{XMFLOAT3( 0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f)},
+			{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f)}, //0
+			{XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.5f, 0.0f)}, // 1
+			{XMFLOAT3(0.5f,  -0.5f, 0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f)}, // 2
+			{XMFLOAT3(-0.5f,  -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f)}, // 3
+			{XMFLOAT3(0.0f,  0.0f,  0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f)}, // 4
 		};
 
 		D3D11_SUBRESOURCE_DATA vertexBufferData = {0};
-		vertexBufferData.pSysMem = cubeVertices;
+		vertexBufferData.pSysMem = pyramidVertices;
 		vertexBufferData.SysMemPitch = 0;
 		vertexBufferData.SysMemSlicePitch = 0;
-		CD3D11_BUFFER_DESC vertexBufferDesc(sizeof(cubeVertices), D3D11_BIND_VERTEX_BUFFER);
+		CD3D11_BUFFER_DESC vertexBufferDesc(sizeof(pyramidVertices), D3D11_BIND_VERTEX_BUFFER);
 		DX::ThrowIfFailed(
 			m_deviceResources->GetD3DDevice()->CreateBuffer(
 				&vertexBufferDesc,
@@ -269,34 +266,24 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 		// For example: 0,2,1 means that the vertices with indexes
 		// 0, 2 and 1 from the vertex buffer compose the 
 		// first triangle of this mesh.
-		static const unsigned short cubeIndices [] =
+		static const unsigned short pyramidIndices[] =
 		{
-			0,2,1, // -x
-			1,2,3,
+			4, 0, 1,
+			4, 1, 2,
+			4, 2, 3,
+			4, 3, 0,
 
-			4,5,6, // +x
-			5,7,6,
-
-			0,1,5, // -y
-			0,5,4,
-
-			2,6,7, // +y
-			2,7,3,
-
-			0,4,6, // -z
-			0,6,2,
-
-			1,3,7, // +z
-			1,7,5,
+			3, 0, 1,
+			2, 3, 1
 		};
 
-		m_indexCount = ARRAYSIZE(cubeIndices);
+		m_indexCount = ARRAYSIZE(pyramidIndices);
 
 		D3D11_SUBRESOURCE_DATA indexBufferData = {0};
-		indexBufferData.pSysMem = cubeIndices;
+		indexBufferData.pSysMem = pyramidIndices;
 		indexBufferData.SysMemPitch = 0;
 		indexBufferData.SysMemSlicePitch = 0;
-		CD3D11_BUFFER_DESC indexBufferDesc(sizeof(cubeIndices), D3D11_BIND_INDEX_BUFFER);
+		CD3D11_BUFFER_DESC indexBufferDesc(sizeof(pyramidIndices), D3D11_BIND_INDEX_BUFFER);
 		DX::ThrowIfFailed(
 			m_deviceResources->GetD3DDevice()->CreateBuffer(
 				&indexBufferDesc,
@@ -307,7 +294,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 	});
 
 	// Once the cube is loaded, the object is ready to be rendered.
-	createCubeTask.then([this] () {
+	createpyramidTask.then([this] () {
 		m_loadingComplete = true;
 	});
 }

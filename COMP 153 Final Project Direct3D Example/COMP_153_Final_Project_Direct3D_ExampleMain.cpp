@@ -17,8 +17,6 @@ COMP_153_Final_Project_Direct3D_ExampleMain::COMP_153_Final_Project_Direct3D_Exa
 	// TODO: Replace this with your app's content initialization.
 	m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(m_deviceResources));
 
-	m_fpsTextRenderer = std::unique_ptr<SampleFpsTextRenderer>(new SampleFpsTextRenderer(m_deviceResources));
-
 	// TODO: Change the timer settings if you want something other than the default variable timestep mode.
 	// e.g. for 60 FPS fixed timestep update logic, call:
 	/*
@@ -48,7 +46,6 @@ void COMP_153_Final_Project_Direct3D_ExampleMain::Update()
 	{
 		// TODO: Replace this with your app's content update functions.
 		m_sceneRenderer->Update(m_timer);
-		m_fpsTextRenderer->Update(m_timer);
 	});
 }
 
@@ -79,7 +76,6 @@ bool COMP_153_Final_Project_Direct3D_ExampleMain::Render()
 	// Render the scene objects.
 	// TODO: Replace this with your app's content rendering functions.
 	m_sceneRenderer->Render();
-	m_fpsTextRenderer->Render();
 
 	return true;
 }
@@ -88,13 +84,11 @@ bool COMP_153_Final_Project_Direct3D_ExampleMain::Render()
 void COMP_153_Final_Project_Direct3D_ExampleMain::OnDeviceLost()
 {
 	m_sceneRenderer->ReleaseDeviceDependentResources();
-	m_fpsTextRenderer->ReleaseDeviceDependentResources();
 }
 
 // Notifies renderers that device resources may now be recreated.
 void COMP_153_Final_Project_Direct3D_ExampleMain::OnDeviceRestored()
 {
 	m_sceneRenderer->CreateDeviceDependentResources();
-	m_fpsTextRenderer->CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 }

@@ -3,7 +3,6 @@
 #include "Common\StepTimer.h"
 #include "Common\DeviceResources.h"
 #include "Content\Sample3DSceneRenderer.h"
-#include "Content\SampleFpsTextRenderer.h"
 
 // Renders Direct2D and 3D content on the screen.
 namespace COMP_153_Final_Project_Direct3D_Example
@@ -27,7 +26,6 @@ namespace COMP_153_Final_Project_Direct3D_Example
 
 		// TODO: Replace with your own content renderers.
 		std::unique_ptr<Sample3DSceneRenderer> m_sceneRenderer;
-		std::unique_ptr<SampleFpsTextRenderer> m_fpsTextRenderer;
 
 		// Rendering loop timer.
 		DX::StepTimer m_timer;
