@@ -58,8 +58,8 @@ void Sample3DSceneRenderer::CreateWindowSizeDependentResources()
 		);
 
 	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
-	static const XMVECTORF32 eye = { 0.0f, 0.7f, 1.5f, 0.0f };
-	static const XMVECTORF32 at = { 0.0f, -0.1f, 0.0f, 0.0f };
+	static const XMVECTORF32 eye = { 0.0f, 0.0f, 1.0f, 0.0f };
+	static const XMVECTORF32 at = { 0.0f, 0.0f, 0.0f, 0.0f };
 	static const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
 
 	XMStoreFloat4x4(&m_constantBufferData.view, XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
@@ -183,8 +183,8 @@ void Sample3DSceneRenderer::Render()
 void Sample3DSceneRenderer::CreateDeviceDependentResources()
 {
 	// Load shaders asynchronously.
-	auto loadVSTask = DX::ReadDataAsync(L"SampleVertexShader.cso");
-	auto loadPSTask = DX::ReadDataAsync(L"SamplePixelShader.cso");
+	auto loadVSTask = DX::ReadDataAsync(L"PhongVertexShader.cso");
+	auto loadPSTask = DX::ReadDataAsync(L"PhongPixelShader.cso");
 
 	// After the vertex shader file is loaded, create the shader and input layout.
 	auto createVSTask = loadVSTask.then([this](const std::vector<byte>& fileData) {
@@ -201,6 +201,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 
 		DX::ThrowIfFailed(
@@ -241,11 +242,11 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 		// Load mesh vertices. Each vertex has a position and a color.
 		static const VertexPositionColor pyramidVertices[] =
 		{
-			{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f)}, //0
-			{XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.5f, 0.0f)}, // 1
-			{XMFLOAT3(0.5f,  -0.5f, 0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f)}, // 2
-			{XMFLOAT3(-0.5f,  -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f)}, // 3
-			{XMFLOAT3(0.0f,  0.0f,  0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f)}, // 4
+			{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(-1.0f, 1.0f, -1.0f)}, //0
+			{XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.5f, 0.0f), XMFLOAT3(1.0f, 1.0f, -1.0f)}, // 1
+			{XMFLOAT3(0.5f,  -0.5f, 0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f)}, // 2
+			{XMFLOAT3(-0.5f,  -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(-1.0f, 1.0f, 1.0f)}, // 3
+			{XMFLOAT3(0.0f,  0.0f,  0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f)}, // 4
 		};
 
 		D3D11_SUBRESOURCE_DATA vertexBufferData = {0};

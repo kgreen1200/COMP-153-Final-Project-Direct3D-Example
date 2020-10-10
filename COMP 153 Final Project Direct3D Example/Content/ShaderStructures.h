@@ -15,5 +15,6 @@ namespace COMP_153_Final_Project_Direct3D_Example
 	{
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT3 color;
+		DirectX::XMFLOAT3 normal;
 	};
 }
