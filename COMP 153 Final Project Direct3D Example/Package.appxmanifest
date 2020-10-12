@@ -7,14 +7,14 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="bad3fa5b-c2d5-44bd-9c36-e9916189efaf"
+    Name="a457d0c8-cadc-45a2-bdae-60128f206840"
     Publisher="CN=Kevin"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="bad3fa5b-c2d5-44bd-9c36-e9916189efaf" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="a457d0c8-cadc-45a2-bdae-60128f206840" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>COMP 153 Final Project Direct3D Example</DisplayName>
+    <DisplayName>Test</DisplayName>
     <PublisherDisplayName>Kevin</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -30,12 +30,12 @@
   <Applications>
     <Application Id="App"
       Executable="$targetnametoken$.exe"
-      EntryPoint="COMP_153_Final_Project_Direct3D_Example.App">
+      EntryPoint="Test.App">
       <uap:VisualElements
-        DisplayName="COMP 153 Final Project Direct3D Example"
+        DisplayName="Test"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="COMP 153 Final Project Direct3D Example"
+        Description="Test"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />

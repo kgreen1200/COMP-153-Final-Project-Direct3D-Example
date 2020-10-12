@@ -8,7 +8,7 @@ using namespace COMP_153_Final_Project_Direct3D_Example;
 using namespace DirectX;
 using namespace Windows::Foundation;
 
-// Loads vertex and pixel shaders from files and instantiates the pyramid geometry.
+// Loads vertex and pixel shaders from files and instantiates the cube geometry.
 Sample3DSceneRenderer::Sample3DSceneRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources) :
 	m_loadingComplete(false),
 	m_degreesPerSecond(45),
@@ -58,11 +58,21 @@ void Sample3DSceneRenderer::CreateWindowSizeDependentResources()
 		);
 
 	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
-	static const XMVECTORF32 eye = { 0.0f, 0.0f, 1.0f, 0.0f };
-	static const XMVECTORF32 at = { 0.0f, 0.0f, 0.0f, 0.0f };
+	static const XMVECTORF32 eye = { 0.0f, 0.7f, 1.5f, 0.0f };
+	static const XMVECTORF32 at = { 0.0f, -0.1f, 0.0f, 0.0f };
 	static const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
 
 	XMStoreFloat4x4(&m_constantBufferData.view, XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
+
+	// Storing data for pixel buffer since we now have the view matrix
+	XMStoreFloat4x4(&m_lightingConstantBufferData.viewMatrix, XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
+	m_lightingConstantBufferData.globalAmbientLight = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	m_lightingConstantBufferData.light_color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_lightingConstantBufferData.light_position = XMFLOAT4(0.0f, 0.7f, 0.0f, 1.0f);
+	m_lightingConstantBufferData.constantAttenuation = 0.0f;
+	m_lightingConstantBufferData.linearAttenuation = 0.0f;
+	m_lightingConstantBufferData.quadraticAttenuation = 1.0f;
+
 }
 
 // Called once per frame, rotates the cube and calculates the model and view matrices.
@@ -117,6 +127,17 @@ void Sample3DSceneRenderer::Render()
 
 	auto context = m_deviceResources->GetD3DDeviceContext();
 
+
+
+	// Each vertex is one instance of the VertexPositionColor struct.
+	UINT stride = sizeof(VertexPositionColor);
+	UINT offset = 0;
+
+
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	context->IASetInputLayout(m_inputLayout.Get());
+
 	// Prepare the constant buffer to send it to the graphics device.
 	context->UpdateSubresource1(
 		m_constantBuffer.Get(),
@@ -126,35 +147,7 @@ void Sample3DSceneRenderer::Render()
 		0,
 		0,
 		0
-		);
-
-	// Each vertex is one instance of the VertexPositionColor struct.
-	UINT stride = sizeof(VertexPositionColor);
-	UINT offset = 0;
-	context->IASetVertexBuffers(
-		0,
-		1,
-		m_vertexBuffer.GetAddressOf(),
-		&stride,
-		&offset
-		);
-
-	context->IASetIndexBuffer(
-		m_indexBuffer.Get(),
-		DXGI_FORMAT_R16_UINT, // Each index is one 16-bit unsigned integer (short).
-		0
-		);
-
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	context->IASetInputLayout(m_inputLayout.Get());
-
-	// Attach our vertex shader.
-	context->VSSetShader(
-		m_vertexShader.Get(),
-		nullptr,
-		0
-		);
+	);
 
 	// Send the constant buffer to the graphics device.
 	context->VSSetConstantBuffers1(
@@ -163,6 +156,31 @@ void Sample3DSceneRenderer::Render()
 		m_constantBuffer.GetAddressOf(),
 		nullptr,
 		nullptr
+	);
+
+	// ps constant buffer
+	context->UpdateSubresource1(
+		m_lightConstantBuffer.Get(),
+		0,
+		NULL,
+		&m_lightingConstantBufferData,
+		0,
+		0,
+		0
+	);
+	context->PSSetConstantBuffers1(
+		0,
+		1,
+		m_lightConstantBuffer.GetAddressOf(),
+		nullptr,
+		nullptr
+	);
+
+	// Attach our vertex shader.
+	context->VSSetShader(
+		m_vertexShader.Get(),
+		nullptr,
+		0
 		);
 
 	// Attach our pixel shader.
@@ -171,6 +189,20 @@ void Sample3DSceneRenderer::Render()
 		nullptr,
 		0
 		);
+
+	context->IASetVertexBuffers(
+		0,
+		1,
+		m_vertexBuffer.GetAddressOf(),
+		&stride,
+		&offset
+	);
+
+	context->IASetIndexBuffer(
+		m_indexBuffer.Get(),
+		DXGI_FORMAT_R16_UINT, // Each index is one 16-bit unsigned integer (short).
+		0
+	);
 
 	// Draw the objects.
 	context->DrawIndexed(
@@ -183,8 +215,8 @@ void Sample3DSceneRenderer::Render()
 void Sample3DSceneRenderer::CreateDeviceDependentResources()
 {
 	// Load shaders asynchronously.
-	auto loadVSTask = DX::ReadDataAsync(L"PhongVertexShader.cso");
-	auto loadPSTask = DX::ReadDataAsync(L"PhongPixelShader.cso");
+	auto loadVSTask = DX::ReadDataAsync(L"ExampleVertexShader.cso");
+	auto loadPSTask = DX::ReadDataAsync(L"ExamplePixelShader.cso");
 
 	// After the vertex shader file is loaded, create the shader and input layout.
 	auto createVSTask = loadVSTask.then([this](const std::vector<byte>& fileData) {
@@ -201,7 +233,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
 		DX::ThrowIfFailed(
@@ -234,26 +266,43 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 				&m_constantBuffer
 				)
 			);
+
+		// the lighting model constant buffer is not divisible by 16 in its size, so we tack on 8 bytes to make it fit.
+		CD3D11_BUFFER_DESC lightingConstantBufferDesc(sizeof(LightingModelConstantBuffer) + 8, D3D11_BIND_CONSTANT_BUFFER);
+		DX::ThrowIfFailed(
+			m_deviceResources->GetD3DDevice()->CreateBuffer(
+				&lightingConstantBufferDesc,
+				nullptr,
+				&m_lightConstantBuffer
+			)
+		);
 	});
 
 	// Once both shaders are loaded, create the mesh.
-	auto createpyramidTask = (createPSTask && createVSTask).then([this] () {
+	auto createCubeTask = (createPSTask && createVSTask).then([this] () { // basically says once the shaders are loaded in, then do this chunk of code
 
 		// Load mesh vertices. Each vertex has a position and a color.
-		static const VertexPositionColor pyramidVertices[] =
+		static const VertexPositionColor cubeVertices[] = 
 		{
-			{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(-1.0f, 1.0f, -1.0f)}, //0
-			{XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.5f, 0.0f), XMFLOAT3(1.0f, 1.0f, -1.0f)}, // 1
-			{XMFLOAT3(0.5f,  -0.5f, 0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f)}, // 2
-			{XMFLOAT3(-0.5f,  -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(-1.0f, 1.0f, 1.0f)}, // 3
-			{XMFLOAT3(0.0f,  0.0f,  0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f)}, // 4
+			{XMFLOAT3(-0.5f,  0.0f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(-1.0f,  1.0f, -1.0f)}, // 0
+			{XMFLOAT3( 0.5f,  0.0f, -0.5f), XMFLOAT3(1.0f, 0.5f, 0.0f), XMFLOAT3( 1.0f,  1.0f, -1.0f)}, // 1
+			{XMFLOAT3( 0.5f,  0.0f,  0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3( 1.0f,  1.0f,  1.0f)}, // 2
+			{XMFLOAT3(-0.5f,  0.0f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(-1.0f,  1.0f,  1.0f)}, // 3
+			{XMFLOAT3( 0.0f,  0.5f,  0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3( 0.0f,  1.0f,  0.0f)}, // 4
+		};
+
+		static const VertexPositionColor faceVertices0[] = {
+			{XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f)},
+			{XMFLOAT3(0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f)},
+			{XMFLOAT3(0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f)},
+			{XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f)},
 		};
 
 		D3D11_SUBRESOURCE_DATA vertexBufferData = {0};
-		vertexBufferData.pSysMem = pyramidVertices;
+		vertexBufferData.pSysMem = cubeVertices;
 		vertexBufferData.SysMemPitch = 0;
 		vertexBufferData.SysMemSlicePitch = 0;
-		CD3D11_BUFFER_DESC vertexBufferDesc(sizeof(pyramidVertices), D3D11_BIND_VERTEX_BUFFER);
+		CD3D11_BUFFER_DESC vertexBufferDesc(sizeof(cubeVertices), D3D11_BIND_VERTEX_BUFFER);
 		DX::ThrowIfFailed(
 			m_deviceResources->GetD3DDevice()->CreateBuffer(
 				&vertexBufferDesc,
@@ -267,7 +316,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 		// For example: 0,2,1 means that the vertices with indexes
 		// 0, 2 and 1 from the vertex buffer compose the 
 		// first triangle of this mesh.
-		static const unsigned short pyramidIndices[] =
+		static const unsigned short cubeIndices [] =
 		{
 			4, 0, 1,
 			4, 1, 2,
@@ -278,13 +327,21 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 			2, 3, 1
 		};
 
-		m_indexCount = ARRAYSIZE(pyramidIndices);
+		static const unsigned short faceIndices0[] =
+		{
+			0, 3, 2,
+			2, 1, 0
+		};
+
+		m_indexCount = ARRAYSIZE(cubeIndices);
+
+		//m_indexCount = ARRAYSIZE(faceIndices0);
 
 		D3D11_SUBRESOURCE_DATA indexBufferData = {0};
-		indexBufferData.pSysMem = pyramidIndices;
+		indexBufferData.pSysMem = cubeIndices;
 		indexBufferData.SysMemPitch = 0;
 		indexBufferData.SysMemSlicePitch = 0;
-		CD3D11_BUFFER_DESC indexBufferDesc(sizeof(pyramidIndices), D3D11_BIND_INDEX_BUFFER);
+		CD3D11_BUFFER_DESC indexBufferDesc(sizeof(cubeIndices), D3D11_BIND_INDEX_BUFFER);
 		DX::ThrowIfFailed(
 			m_deviceResources->GetD3DDevice()->CreateBuffer(
 				&indexBufferDesc,
@@ -295,7 +352,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 	});
 
 	// Once the cube is loaded, the object is ready to be rendered.
-	createpyramidTask.then([this] () {
+	createCubeTask.then([this] () {
 		m_loadingComplete = true;
 	});
 }
@@ -307,6 +364,7 @@ void Sample3DSceneRenderer::ReleaseDeviceDependentResources()
 	m_inputLayout.Reset();
 	m_pixelShader.Reset();
 	m_constantBuffer.Reset();
+	m_lightConstantBuffer.Reset();
 	m_vertexBuffer.Reset();
 	m_indexBuffer.Reset();
 }

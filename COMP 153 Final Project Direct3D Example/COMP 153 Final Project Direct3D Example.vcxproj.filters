@@ -66,6 +66,9 @@
     <ClInclude Include="App.h" />
     <ClInclude Include="COMP_153_Final_Project_Direct3D_ExampleMain.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ExampleShaderStructures.h">
+      <Filter>Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\StoreLogo.png">
@@ -76,10 +79,10 @@
     <AppxManifest Include="Package.appxmanifest" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="PhongVertexShader.hlsl">
+    <FxCompile Include="ExampleVertexShader.hlsl">
       <Filter>Content</Filter>
     </FxCompile>
-    <FxCompile Include="PhongPixelShader.hlsl">
+    <FxCompile Include="ExamplePixelShader.hlsl">
       <Filter>Content</Filter>
     </FxCompile>
   </ItemGroup>

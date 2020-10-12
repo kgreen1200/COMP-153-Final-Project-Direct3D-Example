@@ -10,6 +10,18 @@ namespace COMP_153_Final_Project_Direct3D_Example
 		DirectX::XMFLOAT4X4 projection;
 	};
 
+	struct LightingModelConstantBuffer
+	{
+		DirectX::XMFLOAT4X4 viewMatrix;
+		DirectX::XMFLOAT3 globalAmbientLight;
+		DirectX::XMFLOAT4 light_color;
+		DirectX::XMFLOAT4 light_position;
+
+		float constantAttenuation;
+		float linearAttenuation;
+		float quadraticAttenuation;
+	};
+
 	// Used to send per-vertex data to the vertex shader.
 	struct VertexPositionColor
 	{

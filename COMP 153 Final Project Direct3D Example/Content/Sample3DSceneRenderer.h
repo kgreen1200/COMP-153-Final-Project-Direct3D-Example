@@ -3,6 +3,7 @@
 #include "..\Common\DeviceResources.h"
 #include "ShaderStructures.h"
 #include "..\Common\StepTimer.h"
+#include <Content\ShaderStructures.h>
 
 namespace COMP_153_Final_Project_Direct3D_Example
 {
@@ -36,9 +37,11 @@ namespace COMP_153_Final_Project_Direct3D_Example
 		Microsoft::WRL::ComPtr<ID3D11VertexShader>	m_vertexShader;
 		Microsoft::WRL::ComPtr<ID3D11PixelShader>	m_pixelShader;
 		Microsoft::WRL::ComPtr<ID3D11Buffer>		m_constantBuffer;
+		Microsoft::WRL::ComPtr<ID3D11Buffer>		m_lightConstantBuffer;
 
 		// System resources for cube geometry.
 		ModelViewProjectionConstantBuffer	m_constantBufferData;
+		LightingModelConstantBuffer m_lightingConstantBufferData;
 		uint32	m_indexCount;
 
 		// Variables used with the rendering loop.
