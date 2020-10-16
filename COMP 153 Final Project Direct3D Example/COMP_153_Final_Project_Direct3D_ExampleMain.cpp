@@ -15,14 +15,7 @@ COMP_153_Final_Project_Direct3D_ExampleMain::COMP_153_Final_Project_Direct3D_Exa
 	m_deviceResources->RegisterDeviceNotify(this);
 
 	// TODO: Replace this with your app's content initialization.
-	m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(m_deviceResources));
-
-	// TODO: Change the timer settings if you want something other than the default variable timestep mode.
-	// e.g. for 60 FPS fixed timestep update logic, call:
-	/*
-	m_timer.SetFixedTimeStep(true);
-	m_timer.SetTargetElapsedSeconds(1.0 / 60);
-	*/
+	m_sceneRenderer = std::unique_ptr<ExampleRenderer>(new ExampleRenderer(m_deviceResources));
 }
 
 COMP_153_Final_Project_Direct3D_ExampleMain::~COMP_153_Final_Project_Direct3D_ExampleMain()

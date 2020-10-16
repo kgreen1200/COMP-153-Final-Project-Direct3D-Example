@@ -16,6 +16,7 @@ namespace COMP_153_Final_Project_Direct3D_Example
 		DirectX::XMFLOAT3 globalAmbientLight;
 		DirectX::XMFLOAT4 light_color;
 		DirectX::XMFLOAT4 light_position;
+		DirectX::XMFLOAT4 viewerPos;
 
 		float constantAttenuation;
 		float linearAttenuation;

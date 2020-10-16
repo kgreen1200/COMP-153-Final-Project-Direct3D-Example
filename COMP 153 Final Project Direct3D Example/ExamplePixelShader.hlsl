@@ -4,6 +4,7 @@ cbuffer LightingModelConstantBuffer : register(b0)
     float3 globalAmbientLight;
     float4 light_color;
     float4 light_position;
+    float4 viewerPos;
     
     float constantAttenuation;
     float linearAttenuation;
@@ -62,7 +63,6 @@ float4 main(PixelShaderInput input) : SV_TARGET
     if (diffuseModifier > 0.0001f)
     {
         float3 r = normalize(reflect(-L, input.normal));
-        float4 viewerPos = float4(0.0f, 0.7f, 1.5f, 0.0f);
         float4 vTemp = viewerPos - input.position;
         float3 v = normalize(float3(vTemp.x, vTemp.y, vTemp.z));
         specularModifier = pow(max(0.0f, dot(r, v)), shininess);

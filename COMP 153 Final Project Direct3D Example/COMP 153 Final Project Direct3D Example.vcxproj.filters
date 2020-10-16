@@ -23,15 +23,9 @@
     <ClCompile Include="Common\DeviceResources.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClInclude Include="Content\Sample3DSceneRenderer.h">
-      <Filter>Content</Filter>
-    </ClInclude>
     <ClInclude Include="Content\ShaderStructures.h">
       <Filter>Content</Filter>
     </ClInclude>
-    <ClCompile Include="Content\Sample3DSceneRenderer.cpp">
-      <Filter>Content</Filter>
-    </ClCompile>
     <FxCompile Include="Content\SamplePixelShader.hlsl">
       <Filter>Content</Filter>
     </FxCompile>
@@ -61,12 +55,18 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="COMP_153_Final_Project_Direct3D_ExampleMain.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Content\ExampleRenderer.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="COMP_153_Final_Project_Direct3D_ExampleMain.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ExampleShaderStructures.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\ExampleRenderer.h">
       <Filter>Content</Filter>
     </ClInclude>
   </ItemGroup>

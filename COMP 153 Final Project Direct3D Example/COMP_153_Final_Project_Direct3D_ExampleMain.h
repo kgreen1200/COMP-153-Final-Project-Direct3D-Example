@@ -2,7 +2,7 @@
 
 #include "Common\StepTimer.h"
 #include "Common\DeviceResources.h"
-#include "Content\Sample3DSceneRenderer.h"
+#include "Content\ExampleRenderer.h"
 
 // Renders Direct2D and 3D content on the screen.
 namespace COMP_153_Final_Project_Direct3D_Example
@@ -25,7 +25,7 @@ namespace COMP_153_Final_Project_Direct3D_Example
 		std::shared_ptr<DX::DeviceResources> m_deviceResources;
 
 		// TODO: Replace with your own content renderers.
-		std::unique_ptr<Sample3DSceneRenderer> m_sceneRenderer;
+		std::unique_ptr<ExampleRenderer> m_sceneRenderer;
 
 		// Rendering loop timer.
 		DX::StepTimer m_timer;

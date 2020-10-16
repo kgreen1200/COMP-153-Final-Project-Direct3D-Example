@@ -255,7 +255,7 @@
     <ClInclude Include="COMP_153_Final_Project_Direct3D_ExampleMain.h" />
     <ClInclude Include="Common\DirectXHelper.h" />
     <ClInclude Include="Common\StepTimer.h" />
-    <ClInclude Include="Content\Sample3DSceneRenderer.h" />
+    <ClInclude Include="Content\ExampleRenderer.h" />
     <ClInclude Include="Content\ShaderStructures.h" />
     <ClInclude Include="ExampleShaderStructures.h" />
     <ClInclude Include="pch.h" />
@@ -264,7 +264,7 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Common\DeviceResources.cpp" />
     <ClCompile Include="COMP_153_Final_Project_Direct3D_ExampleMain.cpp" />
-    <ClCompile Include="Content\Sample3DSceneRenderer.cpp" />
+    <ClCompile Include="Content\ExampleRenderer.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
