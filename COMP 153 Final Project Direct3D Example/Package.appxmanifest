@@ -32,10 +32,10 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="Test.App">
       <uap:VisualElements
-        DisplayName="COMP 153 - Spinning Cube of Application"
+        DisplayName="Direct3D Tutorial"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="Test"
+        Description="Tutorial for Direct3D and DirectX11."
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />

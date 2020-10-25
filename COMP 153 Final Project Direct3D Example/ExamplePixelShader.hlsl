@@ -21,9 +21,9 @@ struct PixelShaderInput
 
 float4 main(PixelShaderInput input) : SV_TARGET
 {
+    // Implements the Phong Reflection Model
+    // This has been designed to be as similar to Lab 7 from COMP 153 as possible for easy comparison.
     float4 pixel_color;
-    
-    //float3 globalAmbientLight = float3(1.0f, 0.0f, 0.0f);
     
     float shininess = 1.0f;
     
@@ -79,7 +79,6 @@ float4 main(PixelShaderInput input) : SV_TARGET
     float3 rgb = min(sumOfLights, float3(1.0f, 1.0f, 1.0f));
     pixel_color = float4(rgb.r, rgb.g, rgb.b, 1.0f);
     
-    //return float4(globalAmbientLight.r, globalAmbientLight.g, globalAmbientLight.b, 1.0f);
     return pixel_color;
 
 }
